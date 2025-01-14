@@ -8,11 +8,11 @@ var userController = require("../controller/user_controller");
 
 var validation = require("../middleware/validation");
 
+var _require = require("../controller/user_controller"),
+    registration = _require.registration,
+    login = _require.login;
+
 var upload = multer();
-router.get("/login", function (req, res) {
-  res.status(200).json({
-    message: "Hello World"
-  });
-});
-router.post("/register", upload.none(), validation.userValidation, validation.validationResponse, userController);
+router.post("/login", upload.none(), validation.loginValidation, validation.validationResponse, login);
+router.post("/register", upload.none(), validation.registrationValidation, validation.validationResponse, registration);
 module.exports = router;

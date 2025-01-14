@@ -2,18 +2,23 @@ const router = require("express").Router();
 const multer = require("multer");
 const userController = require("../controller/user_controller");
 const validation = require("../middleware/validation");
+const { registration, login } = require("../controller/user_controller");
 const upload = multer();
 
-router.get("/login", (req, res) => {
-  res.status(200).json({ message: "Hello World" });
-});
+router.post(
+  "/login",
+  upload.none(),
+  validation.loginValidation,
+  validation.validationResponse,
+  login
+);
 
 router.post(
   "/register",
   upload.none(),
-  validation.userValidation,
+  validation.registrationValidation,
   validation.validationResponse,
-  userController
+  registration
 );
 
 module.exports = router;

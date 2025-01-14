@@ -3,11 +3,11 @@
 var _require = require("../models"),
     User = _require.User;
 
-var bcrypt = require('bcrypt');
+var bcrypt = require("bcrypt");
 
-var userController = function userController(req, res) {
+var registration = function registration(req, res) {
   var pass, user;
-  return regeneratorRuntime.async(function userController$(_context) {
+  return regeneratorRuntime.async(function registration$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
@@ -50,4 +50,77 @@ var userController = function userController(req, res) {
   }, null, null, [[0, 10]]);
 };
 
-module.exports = userController;
+var login = function login(req, res) {
+  var user, pass;
+  return regeneratorRuntime.async(function login$(_context2) {
+    while (1) {
+      switch (_context2.prev = _context2.next) {
+        case 0:
+          _context2.prev = 0;
+          _context2.next = 3;
+          return regeneratorRuntime.awrap(User.findOne({
+            where: {
+              email: req.body.email
+            }
+          }));
+
+        case 3:
+          user = _context2.sent;
+
+          if (user) {
+            _context2.next = 6;
+            break;
+          }
+
+          return _context2.abrupt("return", res.status(400).json({
+            message: "Password or email or both incorrect"
+          }));
+
+        case 6:
+          _context2.next = 8;
+          return regeneratorRuntime.awrap(bcrypt.compare(req.body.password, user.password));
+
+        case 8:
+          pass = _context2.sent;
+
+          if (pass) {
+            _context2.next = 11;
+            break;
+          }
+
+          return _context2.abrupt("return", res.status(400).json({
+            message: "Password or email or both incorrect"
+          }));
+
+        case 11:
+          res.status(200).json({
+            message: "User login successfully",
+            data: {
+              name: user.name,
+              email: user.email,
+              phone: user.phone,
+              address: user.address
+            }
+          });
+          _context2.next = 17;
+          break;
+
+        case 14:
+          _context2.prev = 14;
+          _context2.t0 = _context2["catch"](0);
+          res.status(400).json({
+            message: _context2.t0.message
+          });
+
+        case 17:
+        case "end":
+          return _context2.stop();
+      }
+    }
+  }, null, null, [[0, 14]]);
+};
+
+module.exports = {
+  registration: registration,
+  login: login
+};

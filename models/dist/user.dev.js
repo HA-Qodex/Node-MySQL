@@ -69,6 +69,9 @@ module.exports = function (sequelize, DataTypes) {
     address: {
       type: DataTypes.STRING,
       allowNull: true
+    },
+    isActive: {
+      type: DataTypes.BOOLEAN
     }
   }, {
     sequelize: sequelize,

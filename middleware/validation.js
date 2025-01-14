@@ -1,5 +1,5 @@
 const { body, validationResult } = require("express-validator");
-const {User} = require("../models");
+const { User } = require("../models");
 
 function validationResponse(req, res, next) {
   const errors = validationResult(req);
@@ -11,7 +11,7 @@ function validationResponse(req, res, next) {
   next();
 }
 
-const userValidation = [
+const registrationValidation = [
   body("name")
     .isLength({ min: 3 })
     .withMessage("Name must be at least 3 characters"),
@@ -25,7 +25,8 @@ const userValidation = [
   }),
   body("phone")
     .optional()
-    .matches(/^01/).withMessage("Invalid phone number")
+    .matches(/^01/)
+    .withMessage("Invalid phone number")
     .isLength({ min: 11, max: 11 })
     .withMessage("Phone digit must be 11")
     .custom(async (value) => {
@@ -40,4 +41,13 @@ const userValidation = [
     .withMessage("Password must be at least 6 characters"),
 ];
 
-module.exports = { validationResponse, userValidation };
+const loginValidation = [
+  body("email")
+    .notEmpty()
+    .withMessage("Email is required")
+    .isEmail()
+    .withMessage("Invalid email"),
+  body("password").isLength({ min: 6 }).withMessage("Password is required"),
+];
+
+module.exports = { validationResponse, registrationValidation, loginValidation };

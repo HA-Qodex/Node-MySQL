@@ -21,7 +21,7 @@ function validationResponse(req, res, next) {
   next();
 }
 
-var userValidation = [body("name").isLength({
+var registrationValidation = [body("name").isLength({
   min: 3
 }).withMessage("Name must be at least 3 characters"), body("email").isEmail().withMessage("Invalid email"), body("email").custom(function _callee(value) {
   var userEmail;
@@ -93,7 +93,11 @@ var userValidation = [body("name").isLength({
 }), body("password").isLength({
   min: 6
 }).withMessage("Password must be at least 6 characters")];
+var loginValidation = [body("email").notEmpty().withMessage("Email is required").isEmail().withMessage("Invalid email"), body("password").isLength({
+  min: 6
+}).withMessage("Password is required")];
 module.exports = {
   validationResponse: validationResponse,
-  userValidation: userValidation
+  registrationValidation: registrationValidation,
+  loginValidation: loginValidation
 };
