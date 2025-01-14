@@ -61,6 +61,10 @@ module.exports = function (sequelize, DataTypes) {
     email: {
       type: DataTypes.STRING,
       allowNull: false
+    },
+    age: {
+      type: DataTypes.INTEGER,
+      allowNull: true
     }
   }, {
     sequelize: sequelize,

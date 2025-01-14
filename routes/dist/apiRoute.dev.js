@@ -9,13 +9,13 @@ var multer = require("multer");
 
 var userController = require("../controller/user_controller");
 
+var validation = require("../middleware/validation");
+
 var upload = multer();
 router.get("/login", function (req, res) {
   res.status(200).json({
     message: "Hello World"
   });
 });
-router.post("/register", upload.none(), [body("name").isLength({
-  min: 3
-}).withMessage("Invalid name"), body("email").isEmail().withMessage("Invalid email")], userController);
+router.post("/register", upload.none(), validation.userValidation, validation.validationResponse, userController);
 module.exports = router;

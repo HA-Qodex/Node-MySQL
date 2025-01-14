@@ -12,8 +12,8 @@ var _require = require('./middleware/invalidRoute'),
 
 require('dotenv').config();
 
-var app = new express(); // app.use(express.json())
-
+var app = new express();
+app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true
