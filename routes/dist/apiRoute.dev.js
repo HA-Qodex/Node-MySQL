@@ -2,9 +2,6 @@
 
 var router = require("express").Router();
 
-var _require = require("express-validator"),
-    body = _require.body;
-
 var multer = require("multer");
 
 var userController = require("../controller/user_controller");

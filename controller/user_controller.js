@@ -1,15 +1,21 @@
 const { User } = require("../models");
+const bcrypt = require('bcrypt');
 
 const userController = async (req, res) => {
   try {
-    const user = await User.create({name: req.body.name, email: req.body.email});
+    const pass = await bcrypt.hash(req.body.password, 10);
+    const user = await User.create({
+      name: req.body.name,
+      password: pass,
+      email: req.body.email,
+      phone: req.body.phone,
+      address: req.body.address
+    });
     res
       .status(201)
-      .json({ message: "Data received successfully", data: user });
+      .json({ message: "User registered successfully", data: req.body });
   } catch (err) {
-    res
-      .status(400)
-      .json({ message: err.message});
+    res.status(400).json({ message: err.message });
   }
 };
 
