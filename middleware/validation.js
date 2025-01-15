@@ -41,6 +41,38 @@ const registrationValidation = [
     .withMessage("Password must be at least 6 characters"),
 ];
 
+const userUpdateValidation = [
+  body("name")
+    .optional()
+    .isLength({ min: 3 })
+    .withMessage("Name must be at least 3 characters"),
+
+  body("phone")
+    .optional()
+    .matches(/^01/)
+    .withMessage("Invalid phone number")
+    .isLength({ min: 11, max: 11 })
+    .withMessage("Phone digit must be 11")
+    .custom(async (value, { req }) => {
+      var userPhone = await User.findOne({ where: { phone: value } });
+      if (userPhone && userPhone.id !== req.user.id) {
+        return Promise.reject("Phone already exists");
+      }
+      return true;
+    }),
+
+  body("password")
+    .optional()
+    .custom(async (value) => {
+      if (value) {
+        if (value.length < 6) {
+          return Promise.reject("Password must be at least 6 characters");
+        }
+      }
+      return true;
+    }),
+];
+
 const loginValidation = [
   body("email")
     .notEmpty()
@@ -50,4 +82,9 @@ const loginValidation = [
   body("password").isLength({ min: 6 }).withMessage("Password is required"),
 ];
 
-module.exports = { validationResponse, registrationValidation, loginValidation };
+module.exports = {
+  validationResponse,
+  registrationValidation,
+  loginValidation,
+  userUpdateValidation,
+};

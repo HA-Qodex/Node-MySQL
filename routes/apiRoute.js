@@ -28,4 +28,14 @@ router.get(
   authVerification.verifyToken,
   dashboardController.fetchData
 );
+
+router.put(
+  "/update-profile",
+  upload.none(),
+  authVerification.verifyToken,
+  validation.userUpdateValidation,
+  validation.validationResponse,
+  userController.updateProfile
+);
+
 module.exports = router;

@@ -93,11 +93,77 @@ var registrationValidation = [body("name").isLength({
 }), body("password").isLength({
   min: 6
 }).withMessage("Password must be at least 6 characters")];
+var userUpdateValidation = [body("name").optional().isLength({
+  min: 3
+}).withMessage("Name must be at least 3 characters"), body("phone").optional().matches(/^01/).withMessage("Invalid phone number").isLength({
+  min: 11,
+  max: 11
+}).withMessage("Phone digit must be 11").custom(function _callee3(value, _ref) {
+  var req, userPhone;
+  return regeneratorRuntime.async(function _callee3$(_context3) {
+    while (1) {
+      switch (_context3.prev = _context3.next) {
+        case 0:
+          req = _ref.req;
+          _context3.next = 3;
+          return regeneratorRuntime.awrap(User.findOne({
+            where: {
+              phone: value
+            }
+          }));
+
+        case 3:
+          userPhone = _context3.sent;
+
+          if (!(userPhone && userPhone.id !== req.user.id)) {
+            _context3.next = 6;
+            break;
+          }
+
+          return _context3.abrupt("return", Promise.reject("Phone already exists"));
+
+        case 6:
+          return _context3.abrupt("return", true);
+
+        case 7:
+        case "end":
+          return _context3.stop();
+      }
+    }
+  });
+}), body("password").optional().custom(function _callee4(value) {
+  return regeneratorRuntime.async(function _callee4$(_context4) {
+    while (1) {
+      switch (_context4.prev = _context4.next) {
+        case 0:
+          if (!value) {
+            _context4.next = 3;
+            break;
+          }
+
+          if (!(value.length < 6)) {
+            _context4.next = 3;
+            break;
+          }
+
+          return _context4.abrupt("return", Promise.reject("Password must be at least 6 characters"));
+
+        case 3:
+          return _context4.abrupt("return", true);
+
+        case 4:
+        case "end":
+          return _context4.stop();
+      }
+    }
+  });
+})];
 var loginValidation = [body("email").notEmpty().withMessage("Email is required").isEmail().withMessage("Invalid email"), body("password").isLength({
   min: 6
 }).withMessage("Password is required")];
 module.exports = {
   validationResponse: validationResponse,
   registrationValidation: registrationValidation,
-  loginValidation: loginValidation
+  loginValidation: loginValidation,
+  userUpdateValidation: userUpdateValidation
 };

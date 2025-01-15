@@ -144,7 +144,70 @@ var login = function login(req, res) {
   }, null, null, [[0, 16]]);
 };
 
+var updateProfile = function updateProfile(req, res) {
+  var userData, _req$body, name, phone, address, password, pass;
+
+  return regeneratorRuntime.async(function updateProfile$(_context3) {
+    while (1) {
+      switch (_context3.prev = _context3.next) {
+        case 0:
+          userData = {};
+          _req$body = req.body, name = _req$body.name, phone = _req$body.phone, address = _req$body.address, password = _req$body.password;
+          if (name) userData.name = name;
+          if (phone) userData.phone = phone;
+          if (address) userData.address = address;
+
+          if (!password) {
+            _context3.next = 10;
+            break;
+          }
+
+          _context3.next = 8;
+          return regeneratorRuntime.awrap(bcrypt.hash(password, 10));
+
+        case 8:
+          pass = _context3.sent;
+          userData.password = pass;
+
+        case 10:
+          if (!(Object.keys(userData).length === 0)) {
+            _context3.next = 12;
+            break;
+          }
+
+          return _context3.abrupt("return", res.status(400).json({
+            message: "No data to update"
+          }));
+
+        case 12:
+          _context3.next = 14;
+          return regeneratorRuntime.awrap(User.update(userData, {
+            where: {
+              id: req.user.id
+            }
+          }));
+
+        case 14:
+          res.status(200).json({
+            message: "User updated successfully"
+          });
+
+          try {} catch (err) {
+            res.status(400).json({
+              message: err.message
+            });
+          }
+
+        case 16:
+        case "end":
+          return _context3.stop();
+      }
+    }
+  });
+};
+
 module.exports = {
   registration: registration,
-  login: login
+  login: login,
+  updateProfile: updateProfile
 };
