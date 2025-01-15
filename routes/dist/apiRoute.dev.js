@@ -6,13 +6,14 @@ var multer = require("multer");
 
 var userController = require("../controller/user_controller");
 
+var dashboardController = require("../controller/dashboard_controller");
+
 var validation = require("../middleware/validation");
 
-var _require = require("../controller/user_controller"),
-    registration = _require.registration,
-    login = _require.login;
+var authVerification = require("../middleware/authVerification");
 
 var upload = multer();
-router.post("/login", upload.none(), validation.loginValidation, validation.validationResponse, login);
-router.post("/register", upload.none(), validation.registrationValidation, validation.validationResponse, registration);
+router.post("/login", upload.none(), validation.loginValidation, validation.validationResponse, userController.login);
+router.post("/register", upload.none(), validation.registrationValidation, validation.validationResponse, userController.registration);
+router.get("/dashboard", upload.none(), authVerification.verifyToken, dashboardController.fetchData);
 module.exports = router;

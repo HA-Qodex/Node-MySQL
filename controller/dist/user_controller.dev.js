@@ -5,6 +5,10 @@ var _require = require("../models"),
 
 var bcrypt = require("bcrypt");
 
+var jwt = require("jsonwebtoken");
+
+require("dotenv").config();
+
 var registration = function registration(req, res) {
   var pass, user;
   return regeneratorRuntime.async(function registration$(_context) {
@@ -51,7 +55,7 @@ var registration = function registration(req, res) {
 };
 
 var login = function login(req, res) {
-  var user, pass;
+  var user, pass, access_token, refresh_token;
   return regeneratorRuntime.async(function login$(_context2) {
     while (1) {
       switch (_context2.prev = _context2.next) {
@@ -93,31 +97,51 @@ var login = function login(req, res) {
           }));
 
         case 11:
+          access_token = jwt.sign({
+            id: user.id,
+            email: user.email
+          }, process.env.ACCESS_TOKEN_SECRET, {
+            expiresIn: process.env.ACCESS_TOKEN_VALIDITY
+          });
+          refresh_token = jwt.sign({
+            id: user.id,
+            email: user.email
+          }, process.env.REFRESH_TOKEN_SECRET, {
+            expiresIn: process.env.REFRESH_TOKEN_VALIDITY
+          });
           res.status(200).json({
             message: "User login successfully",
             data: {
               name: user.name,
               email: user.email,
               phone: user.phone,
-              address: user.address
+              address: user.address,
+              access_token: {
+                token: access_token,
+                expires_in: process.env.ACCESS_TOKEN_VALIDITY
+              },
+              refresh_token: {
+                token: refresh_token,
+                expires_in: process.env.REFRESH_TOKEN_VALIDITY
+              }
             }
           });
-          _context2.next = 17;
+          _context2.next = 19;
           break;
 
-        case 14:
-          _context2.prev = 14;
+        case 16:
+          _context2.prev = 16;
           _context2.t0 = _context2["catch"](0);
           res.status(400).json({
             message: _context2.t0.message
           });
 
-        case 17:
+        case 19:
         case "end":
           return _context2.stop();
       }
     }
-  }, null, null, [[0, 14]]);
+  }, null, null, [[0, 16]]);
 };
 
 module.exports = {

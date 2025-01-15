@@ -1,8 +1,9 @@
 const router = require("express").Router();
 const multer = require("multer");
 const userController = require("../controller/user_controller");
+const dashboardController = require("../controller/dashboard_controller");
 const validation = require("../middleware/validation");
-const { registration, login } = require("../controller/user_controller");
+const authVerification = require("../middleware/authVerification");
 const upload = multer();
 
 router.post(
@@ -10,7 +11,7 @@ router.post(
   upload.none(),
   validation.loginValidation,
   validation.validationResponse,
-  login
+  userController.login
 );
 
 router.post(
@@ -18,7 +19,13 @@ router.post(
   upload.none(),
   validation.registrationValidation,
   validation.validationResponse,
-  registration
+  userController.registration
 );
 
+router.get(
+  "/dashboard",
+  upload.none(),
+  authVerification.verifyToken,
+  dashboardController.fetchData
+);
 module.exports = router;
