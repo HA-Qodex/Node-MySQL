@@ -5,6 +5,7 @@ const dashboardController = require("../controller/dashboard_controller");
 const validation = require("../middleware/validation");
 const authVerification = require("../middleware/authVerification");
 const fileUpload = require("../middleware/fileMiddleware");
+const docUpload = require("../middleware/docMiddleware");
 const upload = multer();
 
 router.post(
@@ -50,5 +51,12 @@ router.get(
   '/uploads/:filename',
     userController.showImage
 );
+
+router.post(
+  '/add-users',
+  docUpload.single('file'),
+  authVerification.verifyToken,
+  userController.addUsers
+)
 
 module.exports = router;

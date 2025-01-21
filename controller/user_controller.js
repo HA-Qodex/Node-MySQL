@@ -3,6 +3,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const path = require("path");
 const fs = require("fs");
+const XLSX = require('xlsx');
+const { log } = require("console");
 require("dotenv").config();
 
 const registration = async (req, res) => {
@@ -71,6 +73,38 @@ const login = async (req, res) => {
   }
 };
 
+const addUsers = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    // Read the file buffer using xlsx
+    const workbook = XLSX.read(req.file.buffer, { type: 'buffer' });
+
+    // Get the first sheet
+    const sheetName = workbook.SheetNames[0];
+    const sheet = workbook.Sheets[sheetName];
+    
+    // Parse the sheet to JSON
+    const data = XLSX.utils.sheet_to_json(sheet);
+
+    for( let i = 0; i < data.length; i++ ) {
+      const user = data[i];
+      const pass = await bcrypt.hash(user.password.toString(), 10);
+      user.password = pass;
+      data[i] = user;
+    }
+
+    const users = await User.bulkCreate(data);
+
+    res.status(200).json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error reading the Excel file' });
+  }
+}
+
 const updateProfile = async (req, res) => {
   const userData = {};
   const { name, phone, address, password } = req.body;
@@ -95,8 +129,9 @@ const updateProfile = async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 };
+
 const updateProfilePhoto = async (req, res) => {
-  try {    
+  try {
     await User.update({ image: req.file.path }, { where: { id: req.user.id } });
     res.status(200).json({
       message: "Image uploaded successfully",
@@ -107,7 +142,7 @@ const updateProfilePhoto = async (req, res) => {
 };
 
 const showImage = async (req, res) => {
-  try {    
+  try {
     const { filename } = req.params;
     const filepath = path.join(__dirname, "../uploads", filename);
 
@@ -125,7 +160,8 @@ const showImage = async (req, res) => {
 module.exports = {
   registration,
   login,
+  addUsers,
   updateProfile,
   updateProfilePhoto,
-  showImage
+  showImage,
 };

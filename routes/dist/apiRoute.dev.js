@@ -14,6 +14,8 @@ var authVerification = require("../middleware/authVerification");
 
 var fileUpload = require("../middleware/fileMiddleware");
 
+var docUpload = require("../middleware/docMiddleware");
+
 var upload = multer();
 router.post("/login", upload.none(), validation.loginValidation, validation.validationResponse, userController.login);
 router.post("/register", upload.none(), validation.registrationValidation, validation.validationResponse, userController.registration);
@@ -22,4 +24,5 @@ authVerification.verifyToken, dashboardController.fetchData);
 router.put("/update-profile", upload.none(), authVerification.verifyToken, validation.userUpdateValidation, validation.validationResponse, userController.updateProfile);
 router.post('/update-profile-photo', fileUpload.single('image'), authVerification.verifyToken, userController.updateProfilePhoto);
 router.get('/uploads/:filename', userController.showImage);
+router.post('/add-users', docUpload.single('file'), authVerification.verifyToken, userController.addUsers);
 module.exports = router;
