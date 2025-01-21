@@ -14,7 +14,7 @@ const verifyToken = (req, res, next) => {
       return res.status(403).json({ message: "Invalid token" });
     }
     const userData = await User.findByPk(tokenData.id, {
-      attributes: ["id", "name", "email", "phone", "address"],
+      attributes: ["id", "name", "image", "email", "phone", "address"],
     });
     req.user = userData;
     next();

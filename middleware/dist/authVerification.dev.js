@@ -33,7 +33,7 @@ var verifyToken = function verifyToken(req, res, next) {
           case 2:
             _context.next = 4;
             return regeneratorRuntime.awrap(User.findByPk(tokenData.id, {
-              attributes: ["id", "name", "email", "phone", "address"]
+              attributes: ["id", "name", "image", "email", "phone", "address"]
             }));
 
           case 4:

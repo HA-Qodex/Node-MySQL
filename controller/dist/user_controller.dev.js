@@ -215,24 +215,36 @@ var updateProfilePhoto = function updateProfilePhoto(req, res) {
     while (1) {
       switch (_context4.prev = _context4.next) {
         case 0:
-          try {
-            req.file.path = "".concat(req.protocol, "://").concat(req.get("host")).concat(req.baseUrl, "/uploads/").concat(req.file.filename);
-            res.status(200).json({
-              message: "Image uploaded successfully",
-              file: req.file
-            });
-          } catch (err) {
-            res.status(400).json({
-              message: err.message
-            });
-          }
+          _context4.prev = 0;
+          _context4.next = 3;
+          return regeneratorRuntime.awrap(User.update({
+            image: req.file.path
+          }, {
+            where: {
+              id: req.user.id
+            }
+          }));
 
-        case 1:
+        case 3:
+          res.status(200).json({
+            message: "Image uploaded successfully"
+          });
+          _context4.next = 9;
+          break;
+
+        case 6:
+          _context4.prev = 6;
+          _context4.t0 = _context4["catch"](0);
+          res.status(400).json({
+            message: _context4.t0.message
+          });
+
+        case 9:
         case "end":
           return _context4.stop();
       }
     }
-  });
+  }, null, null, [[0, 6]]);
 };
 
 var showImage = function showImage(req, res) {

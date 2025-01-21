@@ -97,10 +97,9 @@ const updateProfile = async (req, res) => {
 };
 const updateProfilePhoto = async (req, res) => {
   try {    
-    req.file.path = `${req.protocol}://${req.get("host")}${req.baseUrl}/uploads/${req.file.filename}`;
+    await User.update({ image: req.file.path }, { where: { id: req.user.id } });
     res.status(200).json({
       message: "Image uploaded successfully",
-      file: req.file,
     });
   } catch (err) {
     res.status(400).json({ message: err.message });
