@@ -1,6 +1,8 @@
 const { User } = require("../models");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const path = require("path");
+const fs = require("fs");
 require("dotenv").config();
 
 const registration = async (req, res) => {
@@ -93,5 +95,38 @@ const updateProfile = async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 };
+const updateProfilePhoto = async (req, res) => {
+  try {    
+    req.file.path = `${req.protocol}://${req.get("host")}${req.baseUrl}/uploads/${req.file.filename}`;
+    res.status(200).json({
+      message: "Image uploaded successfully",
+      file: req.file,
+    });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
 
-module.exports = { registration, login, updateProfile };
+const showImage = async (req, res) => {
+  try {    
+    const { filename } = req.params;
+    const filepath = path.join(__dirname, "../uploads", filename);
+
+    // Check if the file exists
+    if (fs.existsSync(filepath)) {
+      res.sendFile(filepath);
+    } else {
+      res.status(404).json({ message: "File not found" });
+    }
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+module.exports = {
+  registration,
+  login,
+  updateProfile,
+  updateProfilePhoto,
+  showImage
+};

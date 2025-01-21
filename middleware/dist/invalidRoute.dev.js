@@ -12,6 +12,7 @@ function invalidRoute(req, res, next) {
 function errorHandler(err, req, res, next) {
   var status = err.status || 500;
   var message = err.message || "Internal Server Error";
+  console.log(err);
   res.status(status).json({
     status: status,
     message: message

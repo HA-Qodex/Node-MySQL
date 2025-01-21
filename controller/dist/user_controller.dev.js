@@ -7,6 +7,10 @@ var bcrypt = require("bcrypt");
 
 var jwt = require("jsonwebtoken");
 
+var path = require("path");
+
+var fs = require("fs");
+
 require("dotenv").config();
 
 var registration = function registration(req, res) {
@@ -206,8 +210,66 @@ var updateProfile = function updateProfile(req, res) {
   });
 };
 
+var updateProfilePhoto = function updateProfilePhoto(req, res) {
+  return regeneratorRuntime.async(function updateProfilePhoto$(_context4) {
+    while (1) {
+      switch (_context4.prev = _context4.next) {
+        case 0:
+          try {
+            req.file.path = "".concat(req.protocol, "://").concat(req.get("host")).concat(req.baseUrl, "/uploads/").concat(req.file.filename);
+            res.status(200).json({
+              message: "Image uploaded successfully",
+              file: req.file
+            });
+          } catch (err) {
+            res.status(400).json({
+              message: err.message
+            });
+          }
+
+        case 1:
+        case "end":
+          return _context4.stop();
+      }
+    }
+  });
+};
+
+var showImage = function showImage(req, res) {
+  var filename, filepath;
+  return regeneratorRuntime.async(function showImage$(_context5) {
+    while (1) {
+      switch (_context5.prev = _context5.next) {
+        case 0:
+          try {
+            filename = req.params.filename;
+            filepath = path.join(__dirname, "../uploads", filename); // Check if the file exists
+
+            if (fs.existsSync(filepath)) {
+              res.sendFile(filepath);
+            } else {
+              res.status(404).json({
+                message: "File not found"
+              });
+            }
+          } catch (err) {
+            res.status(400).json({
+              message: err.message
+            });
+          }
+
+        case 1:
+        case "end":
+          return _context5.stop();
+      }
+    }
+  });
+};
+
 module.exports = {
   registration: registration,
   login: login,
-  updateProfile: updateProfile
+  updateProfile: updateProfile,
+  updateProfilePhoto: updateProfilePhoto,
+  showImage: showImage
 };
