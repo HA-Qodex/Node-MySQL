@@ -4,7 +4,6 @@ const jwt = require("jsonwebtoken");
 const path = require("path");
 const fs = require("fs");
 const XLSX = require('xlsx');
-const { log } = require("console");
 require("dotenv").config();
 
 const registration = async (req, res) => {

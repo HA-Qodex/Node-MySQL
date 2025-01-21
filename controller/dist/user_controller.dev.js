@@ -13,9 +13,6 @@ var fs = require("fs");
 
 var XLSX = require('xlsx');
 
-var _require2 = require("console"),
-    log = _require2.log;
-
 require("dotenv").config();
 
 var registration = function registration(req, res) {
